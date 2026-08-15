@@ -1,5 +1,5 @@
 // =====================================
-// MCE CAMPUS NAVIGATOR V3
+// MCE CAMPUS NAVIGATOR
 // =====================================
 
 const campusData = {
@@ -7,7 +7,6 @@ const campusData = {
     SA: {
         name: "SA Block",
         floors: {
-
             "1": {
                 name: "First Floor",
                 rooms: {
@@ -28,12 +27,10 @@ const campusData = {
     CRB: {
         name: "CRB Block",
         floors: {
-
             "1": {
                 name: "First Floor",
                 rooms: {}
             },
-
             "2": {
                 name: "Second Floor",
                 rooms: {}
@@ -44,12 +41,10 @@ const campusData = {
     ECE: {
         name: "ECE Block",
         floors: {
-
             "1": {
                 name: "First Floor",
                 rooms: {}
             },
-
             "2": {
                 name: "Second Floor",
                 rooms: {}
@@ -60,54 +55,46 @@ const campusData = {
 
 
 // =====================================
-// LANGUAGE
+// GLOBAL STATE
 // =====================================
 
 let currentLanguage = "en";
-
 let currentDestination = null;
 
 
 // =====================================
-// MAP POSITIONS
-// Prototype positions
+// PROTOTYPE MAP POSITIONS
 // =====================================
 
 const buildingPositions = {
 
     SA: {
-        x: 13,
-        y: 18
+        x: 18,
+        y: 20
     },
 
     CRB: {
-        x: 82,
-        y: 18
+        x: 78,
+        y: 20
     },
 
     ECE: {
-        x: 13,
-        y: 70
+        x: 18,
+        y: 68
     }
 
 };
 
 
 // =====================================
-// ELEMENTS
+// GET ELEMENTS
 // =====================================
 
-const blockSelect =
-    document.getElementById("block");
+const blockSelect = document.getElementById("block");
+const floorSelect = document.getElementById("floor");
+const roomSelect = document.getElementById("room");
 
-const floorSelect =
-    document.getElementById("floor");
-
-const roomSelect =
-    document.getElementById("room");
-
-const result =
-    document.getElementById("result");
+const result = document.getElementById("result");
 
 const destinationMarker =
     document.getElementById("destinationMarker");
@@ -123,106 +110,85 @@ const directionsText =
 // BLOCK CHANGE
 // =====================================
 
-blockSelect.addEventListener(
-    "change",
-    function () {
+blockSelect.addEventListener("change", function () {
 
-        const block =
-            blockSelect.value;
+    const block = blockSelect.value;
 
-        floorSelect.innerHTML =
-            '<option value="">Select a floor</option>';
+    floorSelect.innerHTML =
+        '<option value="">Select a floor</option>';
 
-        roomSelect.innerHTML =
-            '<option value="">Select a room</option>';
+    roomSelect.innerHTML =
+        '<option value="">Select a room</option>';
 
-        roomSelect.disabled = true;
+    roomSelect.disabled = true;
 
-        if (!block) {
+    if (!block) {
 
-            floorSelect.disabled = true;
+        floorSelect.disabled = true;
 
-            return;
-        }
-
-        floorSelect.disabled = false;
-
-        const floors =
-            campusData[block].floors;
-
-        Object.keys(floors).forEach(
-            floorNumber => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    floorNumber;
-
-                option.textContent =
-                    floors[floorNumber].name;
-
-                floorSelect.appendChild(option);
-
-            }
-        );
-
+        return;
     }
-);
+
+    floorSelect.disabled = false;
+
+    const floors = campusData[block].floors;
+
+    Object.keys(floors).forEach(function (floorNumber) {
+
+        const option = document.createElement("option");
+
+        option.value = floorNumber;
+
+        option.textContent =
+            floors[floorNumber].name;
+
+        floorSelect.appendChild(option);
+
+    });
+
+});
 
 
 // =====================================
 // FLOOR CHANGE
 // =====================================
 
-floorSelect.addEventListener(
-    "change",
-    function () {
+floorSelect.addEventListener("change", function () {
 
-        const block =
-            blockSelect.value;
+    const block = blockSelect.value;
+    const floor = floorSelect.value;
 
-        const floor =
-            floorSelect.value;
+    roomSelect.innerHTML =
+        '<option value="">Select a room</option>';
 
-        roomSelect.innerHTML =
-            '<option value="">Select a room</option>';
+    if (!block || !floor) {
 
-        if (!block || !floor) {
+        roomSelect.disabled = true;
 
-            roomSelect.disabled = true;
-
-            return;
-        }
-
-        roomSelect.disabled = false;
-
-        const rooms =
-            campusData[block]
-                .floors[floor]
-                .rooms;
-
-        Object.keys(rooms).forEach(
-            roomNumber => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    roomNumber;
-
-                option.textContent =
-                    roomNumber +
-                    " — " +
-                    rooms[roomNumber];
-
-                roomSelect.appendChild(option);
-
-            }
-        );
-
+        return;
     }
-);
+
+    const rooms =
+        campusData[block].floors[floor].rooms;
+
+    roomSelect.disabled =
+        Object.keys(rooms).length === 0;
+
+    Object.keys(rooms).forEach(function (roomNumber) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = roomNumber;
+
+        option.textContent =
+            roomNumber + " — " + rooms[roomNumber];
+
+        roomSelect.appendChild(option);
+
+    });
+
+});
 
 
 // =====================================
@@ -231,15 +197,9 @@ floorSelect.addEventListener(
 
 function findDestination() {
 
-    const block =
-        blockSelect.value;
-
-    const floor =
-        floorSelect.value;
-
-    const room =
-        roomSelect.value;
-
+    const block = blockSelect.value;
+    const floor = floorSelect.value;
+    const room = roomSelect.value;
 
     if (!block || !floor || !room) {
 
@@ -247,7 +207,6 @@ function findDestination() {
 
         return;
     }
-
 
     showDestination(
         block,
@@ -261,11 +220,7 @@ function findDestination() {
 // SHOW DESTINATION
 // =====================================
 
-function showDestination(
-    block,
-    floor,
-    room
-) {
+function showDestination(block, floor, room) {
 
     const building =
         campusData[block];
@@ -276,28 +231,33 @@ function showDestination(
     const roomType =
         floorData.rooms[room];
 
+    if (!roomType) {
+
+        showError();
+
+        return;
+    }
 
     currentDestination = {
 
-        block,
-        floor,
-        room,
+        block: block,
+        floor: floor,
+        room: room,
 
-        building:
-            building.name,
+        building: building.name,
 
-        floorName:
-            floorData.name,
+        floorName: floorData.name,
 
-        roomType
+        roomType: roomType
 
     };
 
 
+    // -------------------------------
     // RESULT
+    // -------------------------------
 
-    result.style.display =
-        "block";
+    result.style.display = "block";
 
     result.innerHTML =
 
@@ -321,7 +281,9 @@ function showDestination(
         "from the Main Gate.";
 
 
+    // -------------------------------
     // MAP
+    // -------------------------------
 
     selectBuilding(block);
 
@@ -330,7 +292,9 @@ function showDestination(
     drawRoute(block);
 
 
+    // -------------------------------
     // DIRECTIONS
+    // -------------------------------
 
     updateDirections(
         block,
@@ -339,7 +303,9 @@ function showDestination(
     );
 
 
+    // -------------------------------
     // RECENT
+    // -------------------------------
 
     saveRecent(
         block,
@@ -358,28 +324,22 @@ function selectBuilding(block) {
 
     document
         .querySelectorAll(".building")
-        .forEach(
-            building => {
+        .forEach(function (building) {
 
-                building.classList.remove(
-                    "selected"
-                );
+            building.classList.remove("selected");
 
-            }
-        );
+        });
 
 
     const selected =
         document.querySelector(
-            `[data-block="${block}"]`
+            '[data-block="' + block + '"]'
         );
 
 
     if (selected) {
 
-        selected.classList.add(
-            "selected"
-        );
+        selected.classList.add("selected");
 
     }
 
@@ -395,14 +355,12 @@ function showMarker(block) {
     const position =
         buildingPositions[block];
 
+    if (!position) return;
 
-    destinationMarker.style.display =
-        "block";
-
+    destinationMarker.style.display = "block";
 
     destinationMarker.style.left =
         position.x + "%";
-
 
     destinationMarker.style.top =
         position.y + "%";
@@ -419,23 +377,18 @@ function drawRoute(block) {
     const position =
         buildingPositions[block];
 
+    if (!position) return;
+
 
     const startX = 10;
     const startY = 88;
 
-
-    const endX =
-        position.x;
-
-    const endY =
-        position.y;
+    const endX = position.x;
+    const endY = position.y;
 
 
-    const dx =
-        endX - startX;
-
-    const dy =
-        endY - startY;
+    const dx = endX - startX;
+    const dy = endY - startY;
 
 
     const distance =
@@ -446,33 +399,24 @@ function drawRoute(block) {
 
 
     const angle =
-        Math.atan2(
-            dy,
-            dx
-        ) *
-        (180 / Math.PI);
+        Math.atan2(dy, dx) *
+        180 /
+        Math.PI;
 
 
-    routeLine.style.display =
-        "block";
-
+    routeLine.style.display = "block";
 
     routeLine.style.left =
         startX + "%";
 
-
     routeLine.style.top =
         startY + "%";
-
 
     routeLine.style.width =
         distance + "%";
 
-
     routeLine.style.transform =
-        "rotate(" +
-        angle +
-        "deg)";
+        "rotate(" + angle + "deg)";
 
 }
 
@@ -542,7 +486,7 @@ function updateDirections(
 
 
 // =====================================
-// SEARCH ROOM
+// QUICK ROOM SEARCH
 // =====================================
 
 function searchRoom() {
@@ -570,97 +514,94 @@ function searchRoom() {
     }
 
 
-    let found = false;
+    let matches = [];
 
 
-    Object.keys(campusData)
-        .forEach(
-            block => {
+    Object.keys(campusData).forEach(function (block) {
 
-                const floors =
-                    campusData[block].floors;
+        const floors =
+            campusData[block].floors;
 
 
-                Object.keys(floors)
-                    .forEach(
-                        floor => {
+        Object.keys(floors).forEach(function (floor) {
 
-                            const rooms =
-                                floors[floor].rooms;
+            const rooms =
+                floors[floor].rooms;
 
 
-                            Object.keys(rooms)
-                                .forEach(
-                                    room => {
+            Object.keys(rooms).forEach(function (room) {
 
-                                        if (
-                                            room.includes(input)
-                                        ) {
+                if (room.includes(input)) {
 
-                                            found = true;
+                    matches.push({
 
+                        block: block,
+                        floor: floor,
+                        room: room
 
-                                            const item =
-                                                document.createElement(
-                                                    "div"
-                                                );
+                    });
 
-                                            item.className =
-                                                "suggestion";
+                }
 
+            });
 
-                                            item.innerHTML =
+        });
 
-                                                "📍 <strong>" +
-                                                room +
-                                                "</strong> — " +
-
-                                                campusData[block]
-                                                    .name;
+    });
 
 
-                                            item.onclick =
-                                                function () {
-
-                                                    selectDestinationFromSearch(
-                                                        block,
-                                                        floor,
-                                                        room
-                                                    );
-
-                                                };
-
-
-                                            suggestions.appendChild(
-                                                item
-                                            );
-
-                                        }
-
-                                    }
-                                );
-
-                        }
-                    );
-
-            }
-        );
-
-
-    if (!found) {
+    if (matches.length === 0) {
 
         suggestions.innerHTML =
             currentLanguage === "kn"
                 ? "❌ ಕೊಠಡಿ ಕಂಡುಬಂದಿಲ್ಲ."
                 : "❌ Room not found.";
 
+        return;
     }
+
+
+    matches.forEach(function (match) {
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "suggestion";
+
+
+        item.innerHTML =
+
+            "📍 <strong>" +
+            match.room +
+            "</strong> — " +
+
+            campusData[
+                match.block
+            ].name;
+
+
+        item.onclick = function () {
+
+            selectDestinationFromSearch(
+                match.block,
+                match.floor,
+                match.room
+            );
+
+        };
+
+
+        suggestions.appendChild(item);
+
+    });
 
 }
 
 
 // =====================================
-// SEARCH RESULT SELECT
+// SEARCH RESULT
 // =====================================
 
 function selectDestinationFromSearch(
@@ -669,32 +610,26 @@ function selectDestinationFromSearch(
     room
 ) {
 
-    blockSelect.value =
-        block;
-
+    blockSelect.value = block;
 
     blockSelect.dispatchEvent(
         new Event("change")
     );
 
 
-    floorSelect.value =
-        floor;
-
+    floorSelect.value = floor;
 
     floorSelect.dispatchEvent(
         new Event("change")
     );
 
 
-    roomSelect.value =
-        room;
+    roomSelect.value = room;
 
 
     document.getElementById(
         "roomSearch"
-    ).value =
-        room;
+    ).value = room;
 
 
     document.getElementById(
@@ -712,7 +647,7 @@ function selectDestinationFromSearch(
 
 
 // =====================================
-// VOICE DIRECTIONS
+// VOICE
 // =====================================
 
 function speakDirections() {
@@ -784,9 +719,7 @@ function speakDirections() {
 
 function speak(text) {
 
-    if (
-        !("speechSynthesis" in window)
-    ) {
+    if (!("speechSynthesis" in window)) {
 
         alert(
             "Voice guidance is not supported by this browser."
@@ -837,27 +770,25 @@ function saveRecent(
         ) || [];
 
 
-    const item = {
-
-        block,
-        floor,
-        room
-
-    };
-
-
     recent =
-        recent.filter(
-            destination =>
-                !(
-                    destination.block === block &&
-                    destination.floor === floor &&
-                    destination.room === room
-                )
-        );
+        recent.filter(function (item) {
+
+            return !(
+                item.block === block &&
+                item.floor === floor &&
+                item.room === room
+            );
+
+        });
 
 
-    recent.unshift(item);
+    recent.unshift({
+
+        block: block,
+        floor: floor,
+        room: room
+
+    });
 
 
     recent =
@@ -887,6 +818,9 @@ function displayRecent() {
         );
 
 
+    if (!container) return;
+
+
     let recent =
         JSON.parse(
             localStorage.getItem(
@@ -907,58 +841,50 @@ function displayRecent() {
     container.innerHTML = "";
 
 
-    recent.forEach(
-        destination => {
+    recent.forEach(function (destination) {
 
-            const item =
-                document.createElement(
-                    "div"
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "recent-item";
+
+
+        item.innerHTML =
+
+            "<span>" +
+
+            "📍 " +
+            destination.room +
+
+            " — " +
+
+            campusData[
+                destination.block
+            ].name +
+
+            "</span>" +
+
+            "<button type='button'>Open</button>";
+
+
+        item
+            .querySelector("button")
+            .onclick = function () {
+
+                selectDestinationFromSearch(
+                    destination.block,
+                    destination.floor,
+                    destination.room
                 );
 
-
-            item.className =
-                "recent-item";
+            };
 
 
-            item.innerHTML =
+        container.appendChild(item);
 
-                "<span>" +
-
-                "📍 " +
-                destination.room +
-
-                " — " +
-
-                campusData[
-                    destination.block
-                ].name +
-
-                "</span>" +
-
-
-                "<button>Open</button>";
-
-
-            item
-                .querySelector("button")
-                .onclick =
-                function () {
-
-                    selectDestinationFromSearch(
-                        destination.block,
-                        destination.floor,
-                        destination.room
-                    );
-
-                };
-
-
-            container.appendChild(
-                item
-            );
-
-        }
-    );
+    });
 
 }
 
@@ -975,183 +901,96 @@ function setLanguage(language) {
 
     if (language === "kn") {
 
-        document.getElementById(
-            "title"
-        ).innerText =
+        document.getElementById("title").innerText =
             "MCE ಕ್ಯಾಂಪಸ್ ನ್ಯಾವಿಗೇಟರ್";
 
-
-        document.getElementById(
-            "subtitle"
-        ).innerText =
+        document.getElementById("subtitle").innerText =
             "ನಿಮ್ಮ ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಹುಡುಕಿ";
 
-
-        document.getElementById(
-            "searchTitle"
-        ).innerText =
+        document.getElementById("searchTitle").innerText =
             "🔎 ತ್ವರಿತ ಹುಡುಕಾಟ";
 
-
-        document.getElementById(
-            "searchSubtitle"
-        ).innerText =
+        document.getElementById("searchSubtitle").innerText =
             "ಕೊಠಡಿ ಸಂಖ್ಯೆಯನ್ನು ನೇರವಾಗಿ ನಮೂದಿಸಿ";
 
-
-        document.getElementById(
-            "searchButton"
-        ).innerText =
+        document.getElementById("searchButton").innerText =
             "ಹುಡುಕಿ";
 
-
-        document.getElementById(
-            "destinationTitle"
-        ).innerText =
+        document.getElementById("destinationTitle").innerText =
             "🔎 ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹುಡುಕಿ";
 
-
-        document.getElementById(
-            "blockLabel"
-        ).innerText =
+        document.getElementById("blockLabel").innerText =
             "1. ಬ್ಲಾಕ್ ಆಯ್ಕೆಮಾಡಿ";
 
-
-        document.getElementById(
-            "floorLabel"
-        ).innerText =
+        document.getElementById("floorLabel").innerText =
             "2. ಮಹಡಿ ಆಯ್ಕೆಮಾಡಿ";
 
-
-        document.getElementById(
-            "roomLabel"
-        ).innerText =
+        document.getElementById("roomLabel").innerText =
             "3. ಕೊಠಡಿ / ಸೌಲಭ್ಯ ಆಯ್ಕೆಮಾಡಿ";
 
-
-        document.getElementById(
-            "findButton"
-        ).innerText =
+        document.getElementById("findButton").innerText =
             "📍 ಸ್ಥಳ ತೋರಿಸಿ";
 
-
-        document.getElementById(
-            "mapTitle"
-        ).innerText =
+        document.getElementById("mapTitle").innerText =
             "🗺️ MCE ಕ್ಯಾಂಪಸ್ ನಕ್ಷೆ";
 
-
-        document.getElementById(
-            "directionsTitle"
-        ).innerText =
+        document.getElementById("directionsTitle").innerText =
             "🧭 ಮಾರ್ಗ";
 
-
-        document.getElementById(
-            "voiceButton"
-        ).innerText =
+        document.getElementById("voiceButton").innerText =
             "🔊 ಮಾರ್ಗದರ್ಶನ ಕೇಳಿ";
-
-
-        if (currentDestination) {
-
-            updateDirections(
-                currentDestination.block,
-                currentDestination.floor,
-                currentDestination.room
-            );
-
-        }
 
     } else {
 
-        document.getElementById(
-            "title"
-        ).innerText =
+        document.getElementById("title").innerText =
             "MCE Campus Navigator";
 
-
-        document.getElementById(
-            "subtitle"
-        ).innerText =
+        document.getElementById("subtitle").innerText =
             "Find your block, floor and room";
 
-
-        document.getElementById(
-            "searchTitle"
-        ).innerText =
+        document.getElementById("searchTitle").innerText =
             "🔎 Quick Search";
 
-
-        document.getElementById(
-            "searchSubtitle"
-        ).innerText =
+        document.getElementById("searchSubtitle").innerText =
             "Enter a room number directly";
 
-
-        document.getElementById(
-            "searchButton"
-        ).innerText =
+        document.getElementById("searchButton").innerText =
             "Search";
 
-
-        document.getElementById(
-            "destinationTitle"
-        ).innerText =
+        document.getElementById("destinationTitle").innerText =
             "🔎 Find Your Destination";
 
-
-        document.getElementById(
-            "blockLabel"
-        ).innerText =
+        document.getElementById("blockLabel").innerText =
             "1. Select Block";
 
-
-        document.getElementById(
-            "floorLabel"
-        ).innerText =
+        document.getElementById("floorLabel").innerText =
             "2. Select Floor";
 
-
-        document.getElementById(
-            "roomLabel"
-        ).innerText =
+        document.getElementById("roomLabel").innerText =
             "3. Select Room / Facility";
 
-
-        document.getElementById(
-            "findButton"
-        ).innerText =
+        document.getElementById("findButton").innerText =
             "📍 Show Location";
 
-
-        document.getElementById(
-            "mapTitle"
-        ).innerText =
+        document.getElementById("mapTitle").innerText =
             "🗺️ MCE Campus Map";
 
-
-        document.getElementById(
-            "directionsTitle"
-        ).innerText =
+        document.getElementById("directionsTitle").innerText =
             "🧭 Directions";
 
-
-        document.getElementById(
-            "voiceButton"
-        ).innerText =
+        document.getElementById("voiceButton").innerText =
             "🔊 Hear Directions";
 
+    }
 
-        if (currentDestination) {
 
-            updateDirections(
-                currentDestination.block,
-                currentDestination.floor,
-                currentDestination.room
-            );
+    if (currentDestination) {
 
-        }
+        updateDirections(
+            currentDestination.block,
+            currentDestination.floor,
+            currentDestination.room
+        );
 
     }
 
@@ -1168,9 +1007,7 @@ document
         "keydown",
         function (event) {
 
-            if (
-                event.key === "Enter"
-            ) {
+            if (event.key === "Enter") {
 
                 searchRoom();
 
@@ -1181,51 +1018,52 @@ document
 
 
 // =====================================
-// MAP BUILDING CLICK
+// MAP BUILDING BUTTONS
 // =====================================
 
 document
     .querySelectorAll(".building")
-    .forEach(
-        building => {
+    .forEach(function (building) {
 
-            building.addEventListener(
-                "click",
-                function () {
+        building.addEventListener(
+            "click",
+            function () {
 
-                    const block =
-                        this.dataset.block;
+                const block =
+                    this.dataset.block;
 
-                    blockSelect.value =
-                        block;
 
-                    blockSelect.dispatchEvent(
-                        new Event("change")
+                blockSelect.value =
+                    block;
+
+
+                blockSelect.dispatchEvent(
+                    new Event("change")
+                );
+
+
+                const navigationCard =
+                    document.querySelector(
+                        ".navigation-card"
                     );
 
-                    window.scrollTo({
 
-                        top:
-                            document
-                                .querySelector(
-                                    ".navigation-card"
-                                )
-                                .offsetTop,
+                if (navigationCard) {
 
-                        behavior:
-                            "smooth"
-
+                    navigationCard.scrollIntoView({
+                        behavior: "smooth"
                     });
 
                 }
-            );
 
-        }
-    );
+            }
+        );
+
+    });
 
 
 // =====================================
-// ERROR MESSAGE
+// ERROR
 // =====================================
 
 function showError() {
