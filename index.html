@@ -2,21 +2,35 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>MCE Campus Navigator</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
 <div class="container">
 
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
     <header class="header">
 
-        <div class="college-icon">🏫</div>
+        <div class="college-icon">
+            🏫
+        </div>
 
         <h1 id="title">
             MCE Campus Navigator
@@ -29,7 +43,9 @@
     </header>
 
 
-    <!-- LANGUAGE -->
+    <!-- =========================
+         LANGUAGE
+    ========================== -->
 
     <div class="language-box">
 
@@ -50,29 +66,85 @@
     </div>
 
 
-    <!-- COLLEGE INFO -->
+    <!-- =========================
+         COLLEGE INFORMATION
+    ========================== -->
 
     <section class="info-card">
 
-        <h2>🏫 Malnad College of Engineering</h2>
+        <h2>
+            🏫 Malnad College of Engineering
+        </h2>
 
         <p>
+
             Autonomous Engineering Institution<br>
-            No. 21, Salagame Road, Rangoli Halla,<br>
+
+            No. 21, Salagame Road,
+            Rangoli Halla,<br>
+
             Hassan, Karnataka – 573202
+
         </p>
+
 
         <a
             href="https://www.mcehassan.ac.in/"
             target="_blank"
         >
+
             Visit Official MCE Website ↗
+
         </a>
 
     </section>
 
 
-    <!-- NAVIGATION -->
+    <!-- =========================
+         QUICK SEARCH
+    ========================== -->
+
+    <section class="search-card">
+
+        <h2 id="searchTitle">
+            🔎 Quick Search
+        </h2>
+
+        <p id="searchSubtitle">
+            Enter a room number directly
+        </p>
+
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="roomSearch"
+                placeholder="Example: AU303"
+                autocomplete="off"
+            >
+
+            <button
+                onclick="searchRoom()"
+                id="searchButton"
+            >
+                Search
+            </button>
+
+        </div>
+
+
+        <div
+            id="searchSuggestions"
+            class="search-suggestions"
+        ></div>
+
+    </section>
+
+
+    <!-- =========================
+         DESTINATION SELECTOR
+    ========================== -->
 
     <section class="navigation-card">
 
@@ -90,6 +162,7 @@
             1. Select Block
         </label>
 
+
         <select id="block">
 
             <option value="">
@@ -105,7 +178,7 @@
             </option>
 
             <option value="ECE">
-                🏢 ECE Block
+                📡 ECE Block
             </option>
 
         </select>
@@ -119,6 +192,7 @@
         >
             2. Select Floor
         </label>
+
 
         <select
             id="floor"
@@ -140,6 +214,7 @@
         >
             3. Select Room / Facility
         </label>
+
 
         <select
             id="room"
@@ -163,7 +238,9 @@
     </section>
 
 
-    <!-- RESULT -->
+    <!-- =========================
+         RESULT
+    ========================== -->
 
     <section
         id="result"
@@ -171,7 +248,24 @@
     ></section>
 
 
-    <!-- CAMPUS MAP -->
+    <!-- =========================
+         VOICE BUTTON
+    ========================== -->
+
+    <button
+        id="voiceButton"
+        class="voice-button"
+        onclick="speakDirections()"
+    >
+
+        🔊 Hear Directions
+
+    </button>
+
+
+    <!-- =========================
+         CAMPUS MAP
+    ========================== -->
 
     <section class="map-card">
 
@@ -187,7 +281,7 @@
         <div class="campus-map">
 
 
-            <!-- MAIN ENTRANCE -->
+            <!-- MAIN GATE -->
 
             <div
                 id="mainGate"
@@ -203,18 +297,19 @@
             </div>
 
 
-            <!-- CAMPUS ROADS -->
+            <!-- ROADS -->
 
             <div class="road road-horizontal"></div>
 
             <div class="road road-vertical"></div>
 
 
-            <!-- SA BLOCK -->
+            <!-- SA -->
 
             <button
                 class="map-place building sa-block"
                 data-block="SA"
+                type="button"
             >
 
                 🏢
@@ -226,11 +321,12 @@
             </button>
 
 
-            <!-- CRB BLOCK -->
+            <!-- CRB -->
 
             <button
                 class="map-place building crb-block"
                 data-block="CRB"
+                type="button"
             >
 
                 🏢
@@ -242,11 +338,12 @@
             </button>
 
 
-            <!-- ECE BLOCK -->
+            <!-- ECE -->
 
             <button
                 class="map-place building ece-block"
                 data-block="ECE"
+                type="button"
             >
 
                 📡
@@ -258,7 +355,7 @@
             </button>
 
 
-            <!-- DESTINATION MARKER -->
+            <!-- DESTINATION -->
 
             <div
                 id="destinationMarker"
@@ -282,16 +379,19 @@
             id="mapNote"
         >
 
-            ℹ️ Building positions are currently a prototype.
-            Verified room information will be added as we map
-            the official MCE campus layout.
+            ℹ️ Building positions are currently
+            prototype locations. They will be
+            updated using verified MCE campus
+            information.
 
         </div>
 
     </section>
 
 
-    <!-- DIRECTIONS -->
+    <!-- =========================
+         DIRECTIONS
+    ========================== -->
 
     <section class="directions-card">
 
@@ -299,16 +399,51 @@
             🧭 Directions
         </h2>
 
-        <p id="directionsText">
 
-            Select a block, floor and room to get directions.
+        <div
+            id="directionsText"
+            class="directions-content"
+        >
 
-        </p>
+            Select a block, floor and room
+            to get directions.
+
+        </div>
 
     </section>
 
 
-    <!-- VERIFIED DATA -->
+    <!-- =========================
+         RECENT DESTINATIONS
+    ========================== -->
+
+    <section
+        class="recent-card"
+        id="recentCard"
+    >
+
+        <h2>
+            ⭐ Recent Destinations
+        </h2>
+
+
+        <div
+            id="recentDestinations"
+            class="recent-list"
+        >
+
+            <p>
+                No recent destinations yet.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         VERIFIED DATA
+    ========================== -->
 
     <section class="verified-card">
 
@@ -318,14 +453,28 @@
 
         <p>
 
-            <strong>SA / Automobile Engineering records</strong><br>
-            Room: <strong>AU303</strong><br>
-            Classroom information sourced from official MCE material.
+            <strong>
+                SA / Automobile Engineering records
+            </strong>
+
+            <br>
+
+            Room:
+            <strong>AU303</strong>
+
+            <br>
+
+            Classroom information sourced
+            from official MCE material.
 
         </p>
 
     </section>
 
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
     <footer>
 
@@ -334,10 +483,12 @@
         </p>
 
         <small>
-            Student Project • Malnad College of Engineering • Hassan
+            Student Project • Malnad College
+            of Engineering • Hassan
         </small>
 
     </footer>
+
 
 </div>
 
