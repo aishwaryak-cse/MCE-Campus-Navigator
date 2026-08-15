@@ -1,754 +1,799 @@
-// =====================================
-// MCE CAMPUS NAVIGATOR V2
-// =====================================
-
-
-// =====================================
-// CAMPUS DATA
-// =====================================
-
-const campusData = {
-
-    SA: {
-        name: "SA Block",
-
-        floors: {
-
-            ground: {
-                name: "Ground Floor",
-
-                rooms: {
-                    SA104: "SA104"
-                }
-            },
-
-            second: {
-                name: "Second Floor",
-
-                rooms: {
-                    AU303: "AU303 — ICT Classroom"
-                }
-            }
-        }
-    },
-
-
-    CRB: {
-        name: "CRB Block",
-
-        floors: {
-
-            ground: {
-                name: "Ground Floor",
-
-                rooms: {
-                    CRB1: "CRB1",
-                    CRB2: "CRB2"
-                }
-            },
-
-            first: {
-                name: "First Floor",
-
-                rooms: {
-                    CRB3: "CRB3",
-                    CRB4: "CRB4"
-                }
-            }
-        }
-    },
-
-
-    ECE: {
-        name: "ECE Block",
-
-        floors: {
-
-            first: {
-                name: "First Floor",
-
-                rooms: {
-                    MTECH: "M.Tech Classroom"
-                }
-            }
-        }
-    }
-
-};
-
-
-// =====================================
-// CURRENT LANGUAGE
-// =====================================
-
-let currentLanguage = "en";
-
-
-// =====================================
-// GET HTML ELEMENTS
-// =====================================
-
-const blockSelect =
-    document.getElementById("block");
-
-const floorSelect =
-    document.getElementById("floor");
-
-const roomSelect =
-    document.getElementById("room");
-
-
-// =====================================
-// BLOCK → FLOOR
-// =====================================
-
-blockSelect.addEventListener("change", function () {
-
-    const selectedBlock = this.value;
-
-
-    // Reset floor
-
-    floorSelect.innerHTML =
-        '<option value="">Select a floor</option>';
-
-
-    // Reset room
-
-    roomSelect.innerHTML =
-        '<option value="">Select a room</option>';
-
-    roomSelect.disabled = true;
-
-
-    // No block selected
-
-    if (selectedBlock === "") {
-
-        floorSelect.disabled = true;
-
-        return;
-    }
-
-
-    // Enable floor
-
-    floorSelect.disabled = false;
-
-
-    const floors =
-        campusData[selectedBlock].floors;
-
-
-    // Add floors
-
-    Object.keys(floors).forEach(function (floorKey) {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            floorKey;
-
-        option.textContent =
-            floors[floorKey].name;
-
-        floorSelect.appendChild(option);
-
-    });
-
-});
-
-
-// =====================================
-// FLOOR → ROOM
-// =====================================
-
-floorSelect.addEventListener("change", function () {
-
-    const selectedBlock =
-        blockSelect.value;
-
-    const selectedFloor =
-        this.value;
-
-
-    // Reset rooms
-
-    roomSelect.innerHTML =
-        '<option value="">Select a room</option>';
-
-
-    // No floor selected
-
-    if (selectedFloor === "") {
-
-        roomSelect.disabled = true;
-
-        return;
-    }
-
-
-    // Enable rooms
-
-    roomSelect.disabled = false;
-
-
-    const rooms =
-        campusData[selectedBlock]
-            .floors[selectedFloor]
-            .rooms;
-
-
-    // Add rooms
-
-    Object.keys(rooms).forEach(function (roomKey) {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            roomKey;
-
-        option.textContent =
-            rooms[roomKey];
-
-        roomSelect.appendChild(option);
-
-    });
-
-});
-
-
-// =====================================
-// FIND DESTINATION
-// =====================================
-
-function findDestination() {
-
-    const selectedBlock =
-        blockSelect.value;
-
-    const selectedFloor =
-        floorSelect.value;
-
-    const selectedRoom =
-        roomSelect.value;
-
-
-    const result =
-        document.getElementById("result");
-
-
-    // Check selection
-
-    if (
-        selectedBlock === "" ||
-        selectedFloor === "" ||
-        selectedRoom === ""
-    ) {
-
-        result.style.display = "block";
-
-        if (currentLanguage === "en") {
-
-            result.innerHTML =
-                "⚠️ Please select a block, floor and room.";
-
-        } else {
-
-            result.innerHTML =
-                "⚠️ ದಯವಿಟ್ಟು ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
-        }
-
-        return;
-    }
-
-
-    // Get information
-
-    const blockName =
-        campusData[selectedBlock].name;
-
-    const floorName =
-        campusData[selectedBlock]
-            .floors[selectedFloor]
-            .name;
-
-    const roomName =
-        campusData[selectedBlock]
-            .floors[selectedFloor]
-            .rooms[selectedRoom];
-
-
-    // Show result
-
-    result.style.display = "block";
-
-
-    if (currentLanguage === "en") {
-
-        result.innerHTML =
-
-            "📍 <strong>" +
-            roomName +
-            "</strong><br><br>" +
-
-            "🏢 <strong>" +
-            blockName +
-            "</strong><br>" +
-
-            "🏬 " +
-            floorName +
-            "<br><br>" +
-
-            "🚶 Follow the highlighted route from the Main Gate.";
-
-    } else {
-
-        result.innerHTML =
-
-            "📍 <strong>" +
-            roomName +
-            "</strong><br><br>" +
-
-            "🏢 <strong>" +
-            blockName +
-            "</strong><br>" +
-
-            "🏬 " +
-            floorName +
-            "<br><br>" +
-
-            "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ.";
-    }
-
-
-    // Directions
-
-    const directionsText =
-        document.getElementById("directionsText");
-
-
-    if (currentLanguage === "en") {
-
-        directionsText.innerText =
-
-            "🚶 Start at the Main Gate → " +
-            "follow the highlighted route → " +
-            "reach " +
-            roomName +
-            " in " +
-            blockName +
-            ".";
-
-    } else {
-
-        directionsText.innerText =
-
-            "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಪ್ರಾರಂಭಿಸಿ → " +
-            "ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ → " +
-            blockName +
-            " ನ " +
-            roomName +
-            " ತಲುಪಿ.";
-    }
-
-
-    // Show destination
-
-    showDestinationOnMap(selectedBlock);
-
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef4f8;
+    color: #1f2937;
+}
+
+.container {
+    width: 100%;
+    max-width: 760px;
+    margin: auto;
+    padding: 20px;
 }
 
 
-// =====================================
-// SHOW DESTINATION ON MAP
-// =====================================
-
-function showDestinationOnMap(block) {
-
-    const destination =
-        document.querySelector(
-            '[data-block="' + block + '"]'
-        );
-
-
-    const marker =
-        document.getElementById(
-            "destinationMarker"
-        );
-
-
-    const route =
-        document.getElementById(
-            "routeLine"
-        );
-
-
-    const mainGate =
-        document.getElementById(
-            "mainGate"
-        );
-
-
-    // If destination doesn't exist
-
-    if (!destination) {
-
-        marker.style.display = "none";
-
-        route.style.display = "none";
-
-        return;
-    }
-
-
-    // Remove previous selection
-
-    document
-        .querySelectorAll(".map-place")
-        .forEach(function (element) {
-
-            element.classList.remove("selected");
-
-        });
-
-
-    // Highlight selected block
-
-    destination.classList.add("selected");
-
-
-    // Get map position
-
-    const map =
-        document.querySelector(
-            ".campus-map"
-        );
-
-
-    const mapRect =
-        map.getBoundingClientRect();
-
-
-    const destinationRect =
-        destination.getBoundingClientRect();
-
-
-    const gateRect =
-        mainGate.getBoundingClientRect();
-
-
-    // =================================
-    // DESTINATION MARKER
-    // =================================
-
-    const destinationX =
-
-        destinationRect.left -
-        mapRect.left +
-        destinationRect.width / 2;
-
-
-    const destinationY =
-
-        destinationRect.top -
-        mapRect.top;
-
-
-    marker.style.left =
-        destinationX + "px";
-
-    marker.style.top =
-        destinationY + "px";
-
-    marker.style.display =
-        "block";
-
-
-    // =================================
-    // ROUTE START
-    // =================================
-
-    const startX =
-
-        gateRect.left -
-        mapRect.left +
-        gateRect.width / 2;
-
-
-    const startY =
-
-        gateRect.top -
-        mapRect.top +
-        gateRect.height / 2;
-
-
-    // =================================
-    // ROUTE END
-    // =================================
-
-    const endX =
-
-        destinationRect.left -
-        mapRect.left +
-        destinationRect.width / 2;
-
-
-    const endY =
-
-        destinationRect.top -
-        mapRect.top +
-        destinationRect.height / 2;
-
-
-    // =================================
-    // CALCULATE ROUTE
-    // =================================
-
-    const dx =
-        endX - startX;
-
-    const dy =
-        endY - startY;
-
-
-    const distance =
-        Math.sqrt(
-            (dx * dx) +
-            (dy * dy)
-        );
-
-
-    const angle =
-        Math.atan2(dy, dx) *
-        180 /
-        Math.PI;
-
-
-    // =================================
-    // DRAW ROUTE
-    // =================================
-
-    route.style.left =
-        startX + "px";
-
-    route.style.top =
-        startY + "px";
-
-    route.style.width =
-        distance + "px";
-
-    route.style.transform =
-        "rotate(" + angle + "deg)";
-
-    route.style.display =
-        "block";
-
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    text-align: center;
+    padding: 30px 10px 20px;
+}
+
+.college-icon {
+    font-size: 60px;
+}
+
+h1 {
+    margin: 10px 0;
+    color: #164e63;
+    font-size: 32px;
+}
+
+.header p {
+    color: #64748b;
+    line-height: 1.5;
 }
 
 
-// =====================================
-// LANGUAGE SWITCH
-// =====================================
+/* =========================
+   LANGUAGE
+========================= */
 
-function setLanguage(language) {
+.language-box {
+    text-align: center;
+    margin-bottom: 18px;
+}
 
-    currentLanguage =
-        language;
+.language-btn {
+    width: auto;
+    padding: 9px 20px;
+    margin: 4px;
+    border: none;
+    border-radius: 20px;
+    background: #dbeafe;
+    color: #1e40af;
+    font-size: 14px;
+    cursor: pointer;
+}
 
-
-    const title =
-        document.getElementById("title");
-
-    const subtitle =
-        document.getElementById("subtitle");
-
-    const destinationTitle =
-        document.getElementById(
-            "destinationTitle"
-        );
-
-    const blockLabel =
-        document.getElementById(
-            "blockLabel"
-        );
-
-    const floorLabel =
-        document.getElementById(
-            "floorLabel"
-        );
-
-    const roomLabel =
-        document.getElementById(
-            "roomLabel"
-        );
-
-    const findButton =
-        document.getElementById(
-            "findButton"
-        );
-
-    const mapTitle =
-        document.getElementById(
-            "mapTitle"
-        );
-
-    const mapSubtitle =
-        document.getElementById(
-            "mapSubtitle"
-        );
-
-    const mapNote =
-        document.getElementById(
-            "mapNote"
-        );
-
-    const directionsTitle =
-        document.getElementById(
-            "directionsTitle"
-        );
-
-
-    // =================================
-    // KANNADA
-    // =================================
-
-    if (language === "kn") {
-
-        title.innerText =
-            "MCE ಕ್ಯಾಂಪಸ್ ನ್ಯಾವಿಗೇಟರ್";
-
-        subtitle.innerText =
-            "ನಿಮ್ಮ ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಹುಡುಕಿ";
-
-        destinationTitle.innerText =
-            "🔎 ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹುಡುಕಿ";
-
-        blockLabel.innerText =
-            "1. ಬ್ಲಾಕ್ ಆಯ್ಕೆಮಾಡಿ";
-
-        floorLabel.innerText =
-            "2. ಮಹಡಿ ಆಯ್ಕೆಮಾಡಿ";
-
-        roomLabel.innerText =
-            "3. ಕೊಠಡಿ / ಸೌಲಭ್ಯ ಆಯ್ಕೆಮಾಡಿ";
-
-        findButton.innerText =
-            "📍 ಸ್ಥಳವನ್ನು ತೋರಿಸಿ";
-
-        mapTitle.innerText =
-            "🗺️ MCE ಕ್ಯಾಂಪಸ್ ನಕ್ಷೆ";
-
-        mapSubtitle.innerText =
-            "ಸ್ಥಳವನ್ನು ನೋಡಲು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
-
-        mapNote.innerText =
-            "ℹ️ ಕೆಲವು ಕಟ್ಟಡಗಳ ನಿಖರ ಸ್ಥಳಗಳನ್ನು ಅಧಿಕೃತ ಕ್ಯಾಂಪಸ್ ಲೇಔಟ್ ಆಧರಿಸಿ ಮುಂದಿನ ಹಂತದಲ್ಲಿ ನವೀಕರಿಸಲಾಗುತ್ತದೆ.";
-
-        directionsTitle.innerText =
-            "🧭 ಮಾರ್ಗದರ್ಶನ";
-    }
-
-
-    // =================================
-    // ENGLISH
-    // =================================
-
-    else {
-
-        title.innerText =
-            "MCE Campus Navigator";
-
-        subtitle.innerText =
-            "Find your block, floor and room";
-
-        destinationTitle.innerText =
-            "🔎 Find Your Destination";
-
-        blockLabel.innerText =
-            "1. Select Block";
-
-        floorLabel.innerText =
-            "2. Select Floor";
-
-        roomLabel.innerText =
-            "3. Select Room / Facility";
-
-        findButton.innerText =
-            "📍 Show Location";
-
-        mapTitle.innerText =
-            "🗺️ MCE Campus Map";
-
-        mapSubtitle.innerText =
-            "Select a room to see its destination.";
-
-        mapNote.innerText =
-            "ℹ️ Some building positions are currently prototype locations and will be updated using the official campus layout.";
-
-        directionsTitle.innerText =
-            "🧭 Directions";
-    }
-
-
-    // =================================
-    // REFRESH CURRENT DESTINATION
-    // =================================
-
-    const selectedBlock =
-        blockSelect.value;
-
-    const selectedFloor =
-        floorSelect.value;
-
-    const selectedRoom =
-        roomSelect.value;
-
-
-    if (
-        selectedBlock !== "" &&
-        selectedFloor !== "" &&
-        selectedRoom !== ""
-    ) {
-
-        findDestination();
-
-    }
-
+.language-btn:hover {
+    background: #bfdbfe;
 }
 
 
-// =====================================
-// WINDOW RESIZE
-// =====================================
+/* =========================
+   CARDS
+========================= */
 
-window.addEventListener(
-    "resize",
-    function () {
+.info-card,
+.search-card,
+.navigation-card,
+.map-card,
+.directions-card,
+.recent-card,
+.verified-card {
 
-        const selectedBlock =
-            blockSelect.value;
+    background: white;
 
-        const selectedFloor =
-            floorSelect.value;
+    padding: 22px;
 
-        const selectedRoom =
-            roomSelect.value;
+    margin: 16px 0;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    margin-top: 0;
+    color: #164e63;
+    font-size: 21px;
+}
+
+.info-card p,
+.verified-card p {
+    line-height: 1.7;
+}
+
+.info-card a {
+    color: #0369a1;
+    text-decoration: none;
+    font-weight: bold;
+}
 
 
-        if (
-            selectedBlock !== "" &&
-            selectedFloor !== "" &&
-            selectedRoom !== ""
-        ) {
+/* =========================
+   QUICK SEARCH
+========================= */
 
-            showDestinationOnMap(
-                selectedBlock
-            );
+.search-card {
+    background: #f8fafc;
+}
 
-        }
+.search-card p {
+    color: #64748b;
+    margin-top: -8px;
+}
 
+.search-box {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+#roomSearch {
+
+    flex: 1;
+
+    padding: 14px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    outline: none;
+}
+
+#roomSearch:focus {
+    border-color: #0f766e;
+}
+
+#searchButton {
+
+    width: 110px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #0f766e;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#searchButton:hover {
+    background: #115e59;
+}
+
+
+/* SEARCH SUGGESTIONS */
+
+.search-suggestions {
+    margin-top: 8px;
+}
+
+.suggestion {
+
+    padding: 11px 13px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    margin-top: 6px;
+
+    cursor: pointer;
+}
+
+.suggestion:hover {
+    background: #f0fdfa;
+}
+
+
+/* =========================
+   NAVIGATION FORM
+========================= */
+
+label {
+
+    display: block;
+
+    margin-top: 14px;
+
+    margin-bottom: 7px;
+
+    font-weight: bold;
+}
+
+select {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-bottom: 6px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    background: white;
+
+    outline: none;
+}
+
+select:focus {
+    border-color: #0f766e;
+}
+
+select:disabled {
+
+    background: #f1f5f9;
+
+    color: #94a3b8;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   MAIN BUTTON
+========================= */
+
+#findButton {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #0f766e;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+#findButton:hover {
+    background: #115e59;
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+.result {
+
+    display: none;
+
+    background: #ecfdf5;
+
+    border-left: 5px solid #0f766e;
+
+    padding: 18px;
+
+    margin: 16px 0;
+
+    border-radius: 12px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================
+   VOICE BUTTON
+========================= */
+
+.voice-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin: 0 0 16px;
+}
+
+.voice-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================
+   CAMPUS MAP
+========================= */
+
+.campus-map {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 520px;
+
+    margin-top: 18px;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    border: 2px solid #cbd5e1;
+
+    background: #f8fafc;
+
+    box-shadow:
+        inset 0 0 35px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ROADS */
+
+.road {
+    position: absolute;
+
+    background: #e2e8f0;
+
+    z-index: 1;
+}
+
+.road-horizontal {
+
+    left: 0;
+    right: 0;
+
+    top: 48%;
+
+    height: 70px;
+}
+
+.road-vertical {
+
+    top: 0;
+    bottom: 0;
+
+    left: 48%;
+
+    width: 70px;
+}
+
+
+/* DIAGONAL PATH */
+
+.campus-map::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 65%;
+    height: 45px;
+
+    left: 18%;
+    top: 25%;
+
+    background: #e2e8f0;
+
+    transform: rotate(-25deg);
+
+    z-index: 1;
+}
+
+
+/* MAP PLACES */
+
+.map-place {
+
+    position: absolute;
+
+    width: 125px;
+
+    min-height: 85px;
+
+    padding: 10px;
+
+    border-radius: 16px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 25px;
+
+    z-index: 5;
+
+    transition:
+        transform 0.25s,
+        box-shadow 0.25s;
+}
+
+.map-place span {
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* MAIN GATE */
+
+.main-gate {
+
+    left: 5%;
+
+    bottom: 5%;
+
+    background: #0f766e;
+
+    color: white;
+
+    box-shadow:
+        0 6px 15px rgba(15, 118, 110, 0.3);
+}
+
+
+/* SA */
+
+.sa-block {
+
+    left: 6%;
+
+    top: 10%;
+
+    background: #dbeafe;
+
+    color: #1e40af;
+
+    border: 2px solid #60a5fa;
+}
+
+
+/* CRB */
+
+.crb-block {
+
+    right: 6%;
+
+    top: 10%;
+
+    background: #ede9fe;
+
+    color: #5b21b6;
+
+    border: 2px solid #a78bfa;
+}
+
+
+/* ECE */
+
+.ece-block {
+
+    left: 6%;
+
+    bottom: 20%;
+
+    background: #dcfce7;
+
+    color: #166534;
+
+    border: 2px solid #4ade80;
+}
+
+
+/* SELECTED BUILDING */
+
+.map-place.selected {
+
+    transform: scale(1.12);
+
+    box-shadow:
+        0 0 0 5px rgba(15, 118, 110, 0.18),
+        0 8px 22px rgba(0, 0, 0, 0.18);
+
+    z-index: 10;
+}
+
+
+/* DESTINATION MARKER */
+
+.destination-marker {
+
+    position: absolute;
+
+    display: none;
+
+    font-size: 38px;
+
+    z-index: 20;
+
+    transform:
+        translate(-50%, -100%);
+
+    animation:
+        destinationPulse 1s infinite;
+}
+
+@keyframes destinationPulse {
+
+    0% {
+        transform:
+            translate(-50%, -100%)
+            scale(1);
     }
-);
+
+    50% {
+        transform:
+            translate(-50%, -100%)
+            scale(1.18);
+    }
+
+    100% {
+        transform:
+            translate(-50%, -100%)
+            scale(1);
+    }
+}
+
+
+/* ROUTE */
+
+#routeLine {
+
+    position: absolute;
+
+    height: 7px;
+
+    background: #0f766e;
+
+    border-radius: 20px;
+
+    display: none;
+
+    transform-origin: left center;
+
+    z-index: 4;
+
+    box-shadow:
+        0 2px 6px rgba(15, 118, 110, 0.35);
+}
+
+
+/* MAP LEGEND */
+
+.campus-map::before {
+
+    content:
+        "🟢 Route • 📍 Destination • 🚪 Entrance";
+
+    position: absolute;
+
+    left: 15px;
+
+    bottom: 15px;
+
+    padding: 8px 12px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    border-radius: 10px;
+
+    font-size: 11px;
+
+    z-index: 30;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* MAP NOTE */
+
+.map-note {
+
+    margin-top: 15px;
+
+    padding: 13px;
+
+    background: #fff7ed;
+
+    border-left: 4px solid #f97316;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================
+   DIRECTIONS
+========================= */
+
+.directions-card {
+
+    background: #eff6ff;
+}
+
+.directions-content {
+
+    line-height: 1.8;
+
+    white-space: pre-line;
+}
+
+
+/* =========================
+   RECENT DESTINATIONS
+========================= */
+
+.recent-card {
+    background: #fffbeb;
+}
+
+.recent-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.recent-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 12px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    border: 1px solid #fde68a;
+}
+
+.recent-item button {
+
+    width: auto;
+
+    padding: 7px 12px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #0f766e;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   VERIFIED
+========================= */
+
+.verified-card {
+
+    background: #f0fdf4;
+
+    border-left: 5px solid #16a34a;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    color: #64748b;
+
+    padding: 28px 10px;
+}
+
+footer p {
+    font-weight: bold;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    #searchButton {
+        width: 100%;
+        padding: 13px;
+    }
+
+    .campus-map {
+        height: 460px;
+    }
+
+    .map-place {
+        width: 92px;
+        min-height: 70px;
+        font-size: 20px;
+    }
+
+    .map-place span {
+        font-size: 10px;
+    }
+
+    .road-horizontal {
+        height: 55px;
+    }
+
+    .road-vertical {
+        width: 55px;
+    }
+
+}
