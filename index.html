@@ -1,1 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MCE Campus Navigator</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="college-icon">
+                🏫
+            </div>
+
+            <h1 id="title">
+                MCE Campus Navigator
+            </h1>
+
+            <p id="subtitle">
+                Find your way around Malnad College of Engineering
+            </p>
+
+        </header>
+
+
+        <!-- LANGUAGE -->
+
+        <div class="language-box">
+
+            <button
+                class="language-btn"
+                onclick="setLanguage('en')"
+            >
+                English
+            </button>
+
+            <button
+                class="language-btn"
+                onclick="setLanguage('kn')"
+            >
+                ಕನ್ನಡ
+            </button>
+
+        </div>
+
+
+        <!-- COLLEGE INFO -->
+
+        <section class="info-card">
+
+            <h2>
+                🏫 Malnad College of Engineering
+            </h2>
+
+            <p id="collegeInfo">
+
+                Autonomous Engineering College<br>
+                Hassan, Karnataka
+
+            </p>
+
+            <a
+                href="https://www.mcehassan.ac.in/"
+                target="_blank"
+            >
+                Visit Official MCE Website ↗
+            </a>
+
+        </section>
+
+
+        <!-- DESTINATION SEARCH -->
+
+        <section class="navigation-card">
+
+            <h2 id="destinationTitle">
+                🔎 Find Your Destination
+            </h2>
+
+            <label
+                for="destination"
+                id="destinationLabel"
+            >
+                Select a destination
+            </label>
+
+
+            <select id="destination">
+
+                <option value="">
+                    Select a destination
+                </option>
+
+
+                <optgroup label="Departments">
+
+                    <option value="CSE">
+                        💻 Computer Science & Engineering
+                    </option>
+
+                    <option value="CSEAI">
+                        🤖 CSE (AI & ML)
+                    </option>
+
+                    <option value="CSBS">
+                        💼 Computer Science & Business Systems
+                    </option>
+
+                    <option value="ECE">
+                        📡 Electronics & Communication Engineering
+                    </option>
+
+                    <option value="EEE">
+                        ⚡ Electrical & Electronics Engineering
+                    </option>
+
+                    <option value="ME">
+                        ⚙️ Mechanical Engineering
+                    </option>
+
+                    <option value="CE">
+                        🏗️ Civil Engineering
+                    </option>
+
+                    <option value="RAI">
+                        🤖 Robotics & Artificial Intelligence
+                    </option>
+
+                    <option value="EC">
+                        💻 Electronics & Computer Engineering
+                    </option>
+
+                </optgroup>
+
+
+                <optgroup label="Campus Places">
+
+                    <option value="Library">
+                        📚 Library
+                    </option>
+
+                    <option value="Canteen">
+                        🍴 Canteen
+                    </option>
+
+                    <option value="Auditorium">
+                        🎭 Auditorium
+                    </option>
+
+                    <option value="MainGate">
+                        🚪 Main Gate
+                    </option>
+
+                    <option value="Office">
+                        🏢 College Office
+                    </option>
+
+                    <option value="HelpDesk">
+                        ℹ️ Help Desk
+                    </option>
+
+                </optgroup>
+
+            </select>
+
+
+            <button
+                id="findButton"
+                onclick="findDestination()"
+            >
+                📍 Show Location
+            </button>
+
+        </section>
+
+
+        <!-- RESULT -->
+
+        <section
+            id="result"
+            class="result"
+        ></section>
+
+
+        <!-- CAMPUS MAP -->
+
+        <section class="map-card">
+
+            <h2 id="mapTitle">
+                🗺️ Campus Map
+            </h2>
+
+            <p id="mapSubtitle">
+                Select a destination to see its location.
+            </p>
+
+
+            <div class="campus-map">
+
+
+                <!-- MAIN GATE -->
+
+                <div
+                    id="mainGate"
+                    class="map-place main-gate"
+                >
+
+                    🚪
+
+                    <span>
+                        Main Gate
+                    </span>
+
+                </div>
+
+
+                <!-- CAMPUS ROAD -->
+
+                <div class="road road-horizontal"></div>
+
+                <div class="road road-vertical"></div>
+
+
+                <!-- BUILDINGS -->
+
+                <button
+                    class="map-place building cse"
+                    data-destination="CSE"
+                    onclick="selectDestination('CSE')"
+                >
+
+                    💻
+
+                    <span>
+                        CSE
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place building cseai"
+                    data-destination="CSEAI"
+                    onclick="selectDestination('CSEAI')"
+                >
+
+                    🤖
+
+                    <span>
+                        CSE AI/ML
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place building ece"
+                    data-destination="ECE"
+                    onclick="selectDestination('ECE')"
+                >
+
+                    📡
+
+                    <span>
+                        ECE
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place building eee"
+                    data-destination="EEE"
+                    onclick="selectDestination('EEE')"
+                >
+
+                    ⚡
+
+                    <span>
+                        EEE
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place building mechanical"
+                    data-destination="ME"
+                    onclick="selectDestination('ME')"
+                >
+
+                    ⚙️
+
+                    <span>
+                        Mechanical
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place building civil"
+                    data-destination="CE"
+                    onclick="selectDestination('CE')"
+                >
+
+                    🏗️
+
+                    <span>
+                        Civil
+                    </span>
+
+                </button>
+
+
+                <!-- CAMPUS PLACES -->
+
+                <button
+                    class="map-place campus-place library"
+                    data-destination="Library"
+                    onclick="selectDestination('Library')"
+                >
+
+                    📚
+
+                    <span>
+                        Library
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place campus-place canteen"
+                    data-destination="Canteen"
+                    onclick="selectDestination('Canteen')"
+                >
+
+                    🍴
+
+                    <span>
+                        Canteen
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="map-place campus-place auditorium"
+                    data-destination="Auditorium"
+                    onclick="selectDestination('Auditorium')"
+                >
+
+                    🎭
+
+                    <span>
+                        Auditorium
+                    </span>
+
+                </button>
+
+
+                <!-- ROUTE -->
+
+                <div id="routeLine"></div>
+
+
+            </div>
+
+
+            <div
+                class="map-note"
+                id="mapNote"
+            >
+
+                ⚠️ Campus layout shown here is a prototype.
+                Exact building positions will be updated using
+                the official MCE campus layout.
+
+            </div>
+
+        </section>
+
+
+        <!-- DIRECTIONS -->
+
+        <section class="directions-card">
+
+            <h2 id="directionsTitle">
+                🧭 Directions
+            </h2>
+
+            <p id="directionsText">
+
+                Select a destination to get walking directions.
+
+            </p>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                MCE Campus Navigator
+            </p>
+
+            <small>
+                Student Project • Malnad College of Engineering • Hassan
+            </small>
+
+        </footer>
+
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+  </html>
