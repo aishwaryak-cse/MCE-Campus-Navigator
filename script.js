@@ -1,267 +1,238 @@
 // =====================================
-// MCE CAMPUS NAVIGATOR
+// MCE CAMPUS NAVIGATOR V2
 // =====================================
 
-const destinations = {
+const campusData = {
 
-    CSE: {
-        name: "Computer Science & Engineering",
-        icon: "💻",
+    SA: {
+        name: "SA Block",
 
-        en:
-            "Follow the highlighted route to the Computer Science & Engineering area.",
+        floors: {
 
-        kn:
-            "ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
+            ground: {
+                name: "Ground Floor",
+                rooms: {
+                    SA104: "SA104"
+                }
+            },
+
+            second: {
+                name: "Second Floor",
+                rooms: {
+                    AU303: "AU303 — ICT Classroom"
+                }
+            }
+        }
     },
 
-    CSEAI: {
-        name: "CSE (AI & ML)",
-        icon: "🤖",
+    CRB: {
+        name: "CRB Block",
 
-        en:
-            "Follow the highlighted route to the CSE Artificial Intelligence & Machine Learning area.",
+        floors: {
 
-        kn:
-            "CSE ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಮೆಷಿನ್ ಲರ್ನಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
+            ground: {
+                name: "Ground Floor",
+                rooms: {
+                    CRB1: "CRB1",
+                    CRB2: "CRB2"
+                }
+            },
 
-    CSBS: {
-        name: "Computer Science & Business Systems",
-        icon: "💼",
-
-        en:
-            "Follow the highlighted route to the CSBS area.",
-
-        kn:
-            "ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಬಿಸಿನೆಸ್ ಸಿಸ್ಟಮ್ಸ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
+            first: {
+                name: "First Floor",
+                rooms: {
+                    CRB3: "CRB3",
+                    CRB4: "CRB4"
+                }
+            }
+        }
     },
 
     ECE: {
-        name: "Electronics & Communication Engineering",
-        icon: "📡",
+        name: "ECE Block",
 
-        en:
-            "Follow the highlighted route to the Electronics & Communication Engineering area.",
+        floors: {
 
-        kn:
-            "ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಮ್ಯುನಿಕೇಶನ್ ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    EEE: {
-        name: "Electrical & Electronics Engineering",
-        icon: "⚡",
-
-        en:
-            "Follow the highlighted route to the Electrical & Electronics Engineering area.",
-
-        kn:
-            "ಎಲೆಕ್ಟ್ರಿಕಲ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    ME: {
-        name: "Mechanical Engineering",
-        icon: "⚙️",
-
-        en:
-            "Follow the highlighted route to the Mechanical Engineering area.",
-
-        kn:
-            "ಮೆಕ್ಯಾನಿಕಲ್ ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    CE: {
-        name: "Civil Engineering",
-        icon: "🏗️",
-
-        en:
-            "Follow the highlighted route to the Civil Engineering area.",
-
-        kn:
-            "ಸಿವಿಲ್ ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    RAI: {
-        name: "Robotics & Artificial Intelligence",
-        icon: "🤖",
-
-        en:
-            "Follow the highlighted route to the Robotics & Artificial Intelligence area.",
-
-        kn:
-            "ರೋಬೋಟಿಕ್ಸ್ ಮತ್ತು ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    EC: {
-        name: "Electronics & Computer Engineering",
-        icon: "💻",
-
-        en:
-            "Follow the highlighted route to the Electronics & Computer Engineering area.",
-
-        kn:
-            "ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಎಂಜಿನಿಯರಿಂಗ್ ವಿಭಾಗಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    Library: {
-        name: "Library",
-        icon: "📚",
-
-        en:
-            "Follow the highlighted route to the Library.",
-
-        kn:
-            "ಗ್ರಂಥಾಲಯಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    Canteen: {
-        name: "Canteen",
-        icon: "🍴",
-
-        en:
-            "Follow the highlighted route to the Canteen.",
-
-        kn:
-            "ಕ್ಯಾಂಟೀನ್‌ಗೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    Auditorium: {
-        name: "Auditorium",
-        icon: "🎭",
-
-        en:
-            "Follow the highlighted route to the Auditorium.",
-
-        kn:
-            "ಆಡಿಟೋರಿಯಂಗೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    MainGate: {
-        name: "Main Gate",
-        icon: "🚪",
-
-        en:
-            "You are at the Main Gate.",
-
-        kn:
-            "ನೀವು ಮುಖ್ಯ ಗೇಟ್‌ನಲ್ಲಿದ್ದೀರಿ."
-    },
-
-    Office: {
-        name: "College Office",
-        icon: "🏢",
-
-        en:
-            "Follow the highlighted route to the College Office.",
-
-        kn:
-            "ಕಾಲೇಜು ಕಚೇರಿಗೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-    },
-
-    HelpDesk: {
-        name: "Help Desk",
-        icon: "ℹ️",
-
-        en:
-            "Follow the highlighted route to the Help Desk.",
-
-        kn:
-            "ಸಹಾಯ ಕೇಂದ್ರಕ್ಕೆ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
+            first: {
+                name: "First Floor",
+                rooms: {
+                    MTECH: "M.Tech Classroom"
+                }
+            }
+        }
     }
-
 };
 
 
 // =====================================
-// CURRENT LANGUAGE
+// LANGUAGE
 // =====================================
 
 let currentLanguage = "en";
 
 
 // =====================================
-// FIND DESTINATION
+// ELEMENTS
+// =====================================
+
+const blockSelect =
+    document.getElementById("block");
+
+const floorSelect =
+    document.getElementById("floor");
+
+const roomSelect =
+    document.getElementById("room");
+
+
+// =====================================
+// BLOCK → FLOOR
+// =====================================
+
+blockSelect.addEventListener("change", function () {
+
+    const block = this.value;
+
+    floorSelect.innerHTML =
+        '<option value="">Select a floor</option>';
+
+    roomSelect.innerHTML =
+        '<option value="">Select a room</option>';
+
+    roomSelect.disabled = true;
+
+
+    if (block === "") {
+
+        floorSelect.disabled = true;
+
+        return;
+    }
+
+
+    floorSelect.disabled = false;
+
+
+    const floors =
+        campusData[block].floors;
+
+
+    Object.keys(floors).forEach(function (floor) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = floor;
+
+        option.textContent =
+            floors[floor].name;
+
+        floorSelect.appendChild(option);
+
+    });
+
+});
+
+
+// =====================================
+// FLOOR → ROOM
+// =====================================
+
+floorSelect.addEventListener("change", function () {
+
+    const block =
+        blockSelect.value;
+
+    const floor =
+        this.value;
+
+
+    roomSelect.innerHTML =
+        '<option value="">Select a room</option>';
+
+
+    if (floor === "") {
+
+        roomSelect.disabled = true;
+
+        return;
+    }
+
+
+    roomSelect.disabled = false;
+
+
+    const rooms =
+        campusData[block]
+            .floors[floor]
+            .rooms;
+
+
+    Object.keys(rooms).forEach(function (room) {
+
+        const option =
+            document.createElement("option");
+
+        option.value = room;
+
+        option.textContent =
+            rooms[room];
+
+        roomSelect.appendChild(option);
+
+    });
+
+});
+
+
+// =====================================
+// SHOW LOCATION
 // =====================================
 
 function findDestination() {
 
-    const selected =
-        document.getElementById("destination").value;
+    const block =
+        blockSelect.value;
+
+    const floor =
+        floorSelect.value;
+
+    const room =
+        roomSelect.value;
 
 
-    if (selected === "") {
+    const result =
+        document.getElementById("result");
 
-        const result =
-            document.getElementById("result");
+
+    if (!block || !floor || !room) {
 
         result.style.display = "block";
 
         result.innerHTML =
             currentLanguage === "en"
 
-                ? "⚠️ Please select a destination first."
+                ? "⚠️ Please select a block, floor and room."
 
-                : "⚠️ ದಯವಿಟ್ಟು ಮೊದಲು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
+                : "⚠️ ದಯವಿಟ್ಟು ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
 
         return;
     }
 
 
-    selectDestination(selected);
-}
+    const blockName =
+        campusData[block].name;
 
+    const floorName =
+        campusData[block]
+            .floors[floor]
+            .name;
 
-// =====================================
-// SELECT DESTINATION
-// =====================================
+    const roomName =
+        campusData[block]
+            .floors[floor]
+            .rooms[room];
 
-function selectDestination(destinationId) {
-
-    const destination =
-        destinations[destinationId];
-
-
-    if (!destination) {
-        return;
-    }
-
-
-    // Update dropdown
-
-    document.getElementById("destination").value =
-        destinationId;
-
-
-    // Remove previous selection
-
-    document
-        .querySelectorAll(".map-place")
-        .forEach(place => {
-
-            place.classList.remove("selected");
-
-        });
-
-
-    // Find destination on map
-
-    const destinationElement =
-        document.querySelector(
-            `[data-destination="${destinationId}"]`
-        );
-
-
-    if (destinationElement) {
-
-        destinationElement.classList.add("selected");
-
-    }
-
-
-    // Update result
-
-    const result =
-        document.getElementById("result");
 
     result.style.display = "block";
 
@@ -269,49 +240,96 @@ function selectDestination(destinationId) {
     result.innerHTML =
 
         "📍 <strong>" +
-        destination.icon +
-        " " +
-        destination.name +
+        roomName +
         "</strong><br><br>" +
 
-        destination[currentLanguage];
+        "🏢 <strong>" +
+        blockName +
+        "</strong><br>" +
+
+        "🏬 " +
+        floorName +
+        "<br><br>" +
+
+        (
+            currentLanguage === "en"
+                ? "Follow the highlighted route from the Main Gate."
+                : "ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
+        );
 
 
     // Update directions
 
-    const directionsText =
+    const directions =
         document.getElementById("directionsText");
 
-    directionsText.innerText =
-        destination[currentLanguage];
+    directions.innerText =
+
+        currentLanguage === "en"
+
+            ? "🚶 Start at the Main Gate → follow the highlighted route → reach " +
+              roomName +
+              " in " +
+              blockName +
+              "."
+
+            : "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಪ್ರಾರಂಭಿಸಿ → ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ → " +
+              blockName +
+              " ನ " +
+              roomName +
+              " ತಲುಪಿ.";
 
 
-    // Draw route
-
-    drawRoute(destinationElement);
+    showDestinationOnMap(block);
 
 }
 
 
 // =====================================
-// DRAW ROUTE
+// MAP DESTINATION
 // =====================================
 
-function drawRoute(destinationElement) {
+function showDestinationOnMap(block) {
+
+    const marker =
+        document.getElementById("destinationMarker");
 
     const route =
         document.getElementById("routeLine");
 
-    const entrance =
+
+    const gate =
         document.getElementById("mainGate");
 
 
-    if (!destinationElement) {
+    const destination =
+        document.querySelector(
+            `[data-block="${block}"]`
+        );
+
+
+    if (!destination) {
+
+        marker.style.display = "none";
 
         route.style.display = "none";
 
         return;
     }
+
+
+    // Remove previous highlight
+
+    document
+        .querySelectorAll(".map-place")
+        .forEach(function (element) {
+
+            element.classList.remove("selected");
+
+        });
+
+
+    destination.classList.add("selected");
 
 
     const map =
@@ -321,32 +339,54 @@ function drawRoute(destinationElement) {
     const mapRect =
         map.getBoundingClientRect();
 
-
-    const entranceRect =
-        entrance.getBoundingClientRect();
-
+    const gateRect =
+        gate.getBoundingClientRect();
 
     const destinationRect =
-        destinationElement.getBoundingClientRect();
+        destination.getBoundingClientRect();
 
+
+    // Destination marker
+
+    const destinationX =
+        destinationRect.left -
+        mapRect.left +
+        destinationRect.width / 2;
+
+    const destinationY =
+        destinationRect.top -
+        mapRect.top;
+
+
+    marker.style.left =
+        destinationX + "px";
+
+    marker.style.top =
+        destinationY + "px";
+
+    marker.style.display =
+        "block";
+
+
+    // Route start
 
     const startX =
-        entranceRect.left -
+        gateRect.left -
         mapRect.left +
-        entranceRect.width / 2;
-
+        gateRect.width / 2;
 
     const startY =
-        entranceRect.top -
+        gateRect.top -
         mapRect.top +
-        entranceRect.height / 2;
+        gateRect.height / 2;
 
+
+    // Route end
 
     const endX =
         destinationRect.left -
         mapRect.left +
         destinationRect.width / 2;
-
 
     const endY =
         destinationRect.top -
@@ -356,7 +396,6 @@ function drawRoute(destinationElement) {
 
     const dx =
         endX - startX;
-
 
     const dy =
         endY - startY;
@@ -375,8 +414,6 @@ function drawRoute(destinationElement) {
         Math.PI;
 
 
-    route.style.display = "block";
-
     route.style.left =
         startX + "px";
 
@@ -389,6 +426,9 @@ function drawRoute(destinationElement) {
     route.style.transform =
         `rotate(${angle}deg)`;
 
+    route.style.display =
+        "block";
+
 }
 
 
@@ -398,7 +438,8 @@ function drawRoute(destinationElement) {
 
 function setLanguage(language) {
 
-    currentLanguage = language;
+    currentLanguage =
+        language;
 
 
     const title =
@@ -410,8 +451,14 @@ function setLanguage(language) {
     const destinationTitle =
         document.getElementById("destinationTitle");
 
-    const destinationLabel =
-        document.getElementById("destinationLabel");
+    const blockLabel =
+        document.getElementById("blockLabel");
+
+    const floorLabel =
+        document.getElementById("floorLabel");
+
+    const roomLabel =
+        document.getElementById("roomLabel");
 
     const findButton =
         document.getElementById("findButton");
@@ -435,25 +482,31 @@ function setLanguage(language) {
             "MCE ಕ್ಯಾಂಪಸ್ ನ್ಯಾವಿಗೇಟರ್";
 
         subtitle.innerText =
-            "ಮಲ್ನಾಡ್ ಕಾಲೇಜ್ ಆಫ್ ಎಂಜಿನಿಯರಿಂಗ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಮಾರ್ಗವನ್ನು ಹುಡುಕಿ";
+            "ನಿಮ್ಮ ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಹುಡುಕಿ";
 
         destinationTitle.innerText =
             "🔎 ನಿಮ್ಮ ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹುಡುಕಿ";
 
-        destinationLabel.innerText =
-            "ಗಮ್ಯಸ್ಥಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ";
+        blockLabel.innerText =
+            "1. ಬ್ಲಾಕ್ ಆಯ್ಕೆಮಾಡಿ";
+
+        floorLabel.innerText =
+            "2. ಮಹಡಿ ಆಯ್ಕೆಮಾಡಿ";
+
+        roomLabel.innerText =
+            "3. ಕೊಠಡಿ / ಸೌಲಭ್ಯ ಆಯ್ಕೆಮಾಡಿ";
 
         findButton.innerText =
             "📍 ಸ್ಥಳವನ್ನು ತೋರಿಸಿ";
 
         mapTitle.innerText =
-            "🗺️ ಕ್ಯಾಂಪಸ್ ನಕ್ಷೆ";
+            "🗺️ MCE ಕ್ಯಾಂಪಸ್ ನಕ್ಷೆ";
 
         mapSubtitle.innerText =
-            "ಸ್ಥಳವನ್ನು ನೋಡಲು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
+            "ಸ್ಥಳವನ್ನು ನೋಡಲು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
 
         mapNote.innerText =
-            "⚠️ ಇದು ಪ್ರಸ್ತುತ ಮಾದರಿ ಕ್ಯಾಂಪಸ್ ನಕ್ಷೆಯಾಗಿದೆ. ನಿಖರ ಕಟ್ಟಡಗಳ ಸ್ಥಳಗಳನ್ನು ಅಧಿಕೃತ MCE ಕ್ಯಾಂಪಸ್ ಲೇಔಟ್ ಆಧರಿಸಿ ನವೀಕರಿಸಲಾಗುತ್ತದೆ.";
+            "ℹ️ ಕೆಲವು ಕಟ್ಟಡಗಳ ನಿಖರ ಭೌಗೋಳಿಕ ಸ್ಥಾನಗಳನ್ನು ಅಧಿಕೃತ ಕ್ಯಾಂಪಸ್ ಲೇಔಟ್ ಆಧರಿಸಿ ಮುಂದಿನ ಹಂತದಲ್ಲಿ ನವೀಕರಿಸಲಾಗುತ್ತದೆ.";
 
         directionsTitle.innerText =
             "🧭 ಮಾರ್ಗದರ್ಶನ";
@@ -464,42 +517,35 @@ function setLanguage(language) {
             "MCE Campus Navigator";
 
         subtitle.innerText =
-            "Find your way around Malnad College of Engineering";
+            "Find your block, floor and room";
 
         destinationTitle.innerText =
             "🔎 Find Your Destination";
 
-        destinationLabel.innerText =
-            "Select a destination";
+        blockLabel.innerText =
+            "1. Select Block";
+
+        floorLabel.innerText =
+            "2. Select Floor";
+
+        roomLabel.innerText =
+            "3. Select Room / Facility";
 
         findButton.innerText =
             "📍 Show Location";
 
         mapTitle.innerText =
-            "🗺️ Campus Map";
+            "🗺️ MCE Campus Map";
 
         mapSubtitle.innerText =
-            "Select a destination to see its location.";
+            "Select a room to see its destination.";
 
         mapNote.innerText =
-            "⚠️ Campus layout shown here is a prototype. Exact building positions will be updated using the official MCE campus layout.";
+            "ℹ️ Some building positions are currently prototype locations and will be updated using the official campus layout.";
 
         directionsTitle.innerText =
             "🧭 Directions";
 
     }
 
-
-    // Refresh selected destination
-
-    const selected =
-        document.getElementById("destination").value;
-
-
-    if (selected !== "") {
-
-        selectDestination(selected);
-
-    }
-
-                                }
+}
