@@ -2,6 +2,11 @@
 // MCE CAMPUS NAVIGATOR V2
 // =====================================
 
+
+// =====================================
+// CAMPUS DATA
+// =====================================
+
 const campusData = {
 
     SA: {
@@ -11,6 +16,7 @@ const campusData = {
 
             ground: {
                 name: "Ground Floor",
+
                 rooms: {
                     SA104: "SA104"
                 }
@@ -18,12 +24,14 @@ const campusData = {
 
             second: {
                 name: "Second Floor",
+
                 rooms: {
                     AU303: "AU303 — ICT Classroom"
                 }
             }
         }
     },
+
 
     CRB: {
         name: "CRB Block",
@@ -32,6 +40,7 @@ const campusData = {
 
             ground: {
                 name: "Ground Floor",
+
                 rooms: {
                     CRB1: "CRB1",
                     CRB2: "CRB2"
@@ -40,6 +49,7 @@ const campusData = {
 
             first: {
                 name: "First Floor",
+
                 rooms: {
                     CRB3: "CRB3",
                     CRB4: "CRB4"
@@ -48,6 +58,7 @@ const campusData = {
         }
     },
 
+
     ECE: {
         name: "ECE Block",
 
@@ -55,24 +66,26 @@ const campusData = {
 
             first: {
                 name: "First Floor",
+
                 rooms: {
                     MTECH: "M.Tech Classroom"
                 }
             }
         }
     }
+
 };
 
 
 // =====================================
-// LANGUAGE
+// CURRENT LANGUAGE
 // =====================================
 
 let currentLanguage = "en";
 
 
 // =====================================
-// ELEMENTS
+// GET HTML ELEMENTS
 // =====================================
 
 const blockSelect =
@@ -91,10 +104,16 @@ const roomSelect =
 
 blockSelect.addEventListener("change", function () {
 
-    const block = this.value;
+    const selectedBlock = this.value;
+
+
+    // Reset floor
 
     floorSelect.innerHTML =
         '<option value="">Select a floor</option>';
+
+
+    // Reset room
 
     roomSelect.innerHTML =
         '<option value="">Select a room</option>';
@@ -102,7 +121,9 @@ blockSelect.addEventListener("change", function () {
     roomSelect.disabled = true;
 
 
-    if (block === "") {
+    // No block selected
+
+    if (selectedBlock === "") {
 
         floorSelect.disabled = true;
 
@@ -110,22 +131,27 @@ blockSelect.addEventListener("change", function () {
     }
 
 
+    // Enable floor
+
     floorSelect.disabled = false;
 
 
     const floors =
-        campusData[block].floors;
+        campusData[selectedBlock].floors;
 
 
-    Object.keys(floors).forEach(function (floor) {
+    // Add floors
+
+    Object.keys(floors).forEach(function (floorKey) {
 
         const option =
             document.createElement("option");
 
-        option.value = floor;
+        option.value =
+            floorKey;
 
         option.textContent =
-            floors[floor].name;
+            floors[floorKey].name;
 
         floorSelect.appendChild(option);
 
@@ -140,18 +166,22 @@ blockSelect.addEventListener("change", function () {
 
 floorSelect.addEventListener("change", function () {
 
-    const block =
+    const selectedBlock =
         blockSelect.value;
 
-    const floor =
+    const selectedFloor =
         this.value;
 
+
+    // Reset rooms
 
     roomSelect.innerHTML =
         '<option value="">Select a room</option>';
 
 
-    if (floor === "") {
+    // No floor selected
+
+    if (selectedFloor === "") {
 
         roomSelect.disabled = true;
 
@@ -159,24 +189,29 @@ floorSelect.addEventListener("change", function () {
     }
 
 
+    // Enable rooms
+
     roomSelect.disabled = false;
 
 
     const rooms =
-        campusData[block]
-            .floors[floor]
+        campusData[selectedBlock]
+            .floors[selectedFloor]
             .rooms;
 
 
-    Object.keys(rooms).forEach(function (room) {
+    // Add rooms
+
+    Object.keys(rooms).forEach(function (roomKey) {
 
         const option =
             document.createElement("option");
 
-        option.value = room;
+        option.value =
+            roomKey;
 
         option.textContent =
-            rooms[room];
+            rooms[roomKey];
 
         roomSelect.appendChild(option);
 
@@ -186,18 +221,18 @@ floorSelect.addEventListener("change", function () {
 
 
 // =====================================
-// SHOW LOCATION
+// FIND DESTINATION
 // =====================================
 
 function findDestination() {
 
-    const block =
+    const selectedBlock =
         blockSelect.value;
 
-    const floor =
+    const selectedFloor =
         floorSelect.value;
 
-    const room =
+    const selectedRoom =
         roomSelect.value;
 
 
@@ -205,108 +240,159 @@ function findDestination() {
         document.getElementById("result");
 
 
-    if (!block || !floor || !room) {
+    // Check selection
+
+    if (
+        selectedBlock === "" ||
+        selectedFloor === "" ||
+        selectedRoom === ""
+    ) {
 
         result.style.display = "block";
 
-        result.innerHTML =
-            currentLanguage === "en"
+        if (currentLanguage === "en") {
 
-                ? "⚠️ Please select a block, floor and room."
+            result.innerHTML =
+                "⚠️ Please select a block, floor and room.";
 
-                : "⚠️ ದಯವಿಟ್ಟು ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
+        } else {
+
+            result.innerHTML =
+                "⚠️ ದಯವಿಟ್ಟು ಬ್ಲಾಕ್, ಮಹಡಿ ಮತ್ತು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
+        }
 
         return;
     }
 
 
+    // Get information
+
     const blockName =
-        campusData[block].name;
+        campusData[selectedBlock].name;
 
     const floorName =
-        campusData[block]
-            .floors[floor]
+        campusData[selectedBlock]
+            .floors[selectedFloor]
             .name;
 
     const roomName =
-        campusData[block]
-            .floors[floor]
-            .rooms[room];
+        campusData[selectedBlock]
+            .floors[selectedFloor]
+            .rooms[selectedRoom];
 
+
+    // Show result
 
     result.style.display = "block";
 
 
-    result.innerHTML =
+    if (currentLanguage === "en") {
 
-        "📍 <strong>" +
-        roomName +
-        "</strong><br><br>" +
+        result.innerHTML =
 
-        "🏢 <strong>" +
-        blockName +
-        "</strong><br>" +
+            "📍 <strong>" +
+            roomName +
+            "</strong><br><br>" +
 
-        "🏬 " +
-        floorName +
-        "<br><br>" +
+            "🏢 <strong>" +
+            blockName +
+            "</strong><br>" +
 
-        (
-            currentLanguage === "en"
-                ? "Follow the highlighted route from the Main Gate."
-                : "ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ."
-        );
+            "🏬 " +
+            floorName +
+            "<br><br>" +
+
+            "🚶 Follow the highlighted route from the Main Gate.";
+
+    } else {
+
+        result.innerHTML =
+
+            "📍 <strong>" +
+            roomName +
+            "</strong><br><br>" +
+
+            "🏢 <strong>" +
+            blockName +
+            "</strong><br>" +
+
+            "🏬 " +
+            floorName +
+            "<br><br>" +
+
+            "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ.";
+    }
 
 
-    // Update directions
+    // Directions
 
-    const directions =
+    const directionsText =
         document.getElementById("directionsText");
 
-    directions.innerText =
 
-        currentLanguage === "en"
+    if (currentLanguage === "en") {
 
-            ? "🚶 Start at the Main Gate → follow the highlighted route → reach " +
-              roomName +
-              " in " +
-              blockName +
-              "."
+        directionsText.innerText =
 
-            : "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಪ್ರಾರಂಭಿಸಿ → ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ → " +
-              blockName +
-              " ನ " +
-              roomName +
-              " ತಲುಪಿ.";
+            "🚶 Start at the Main Gate → " +
+            "follow the highlighted route → " +
+            "reach " +
+            roomName +
+            " in " +
+            blockName +
+            ".";
+
+    } else {
+
+        directionsText.innerText =
+
+            "🚶 ಮುಖ್ಯ ಗೇಟ್‌ನಿಂದ ಪ್ರಾರಂಭಿಸಿ → " +
+            "ಹೈಲೈಟ್ ಮಾಡಿರುವ ಮಾರ್ಗವನ್ನು ಅನುಸರಿಸಿ → " +
+            blockName +
+            " ನ " +
+            roomName +
+            " ತಲುಪಿ.";
+    }
 
 
-    showDestinationOnMap(block);
+    // Show destination
+
+    showDestinationOnMap(selectedBlock);
 
 }
 
 
 // =====================================
-// MAP DESTINATION
+// SHOW DESTINATION ON MAP
 // =====================================
 
 function showDestinationOnMap(block) {
 
-    const marker =
-        document.getElementById("destinationMarker");
-
-    const route =
-        document.getElementById("routeLine");
-
-
-    const gate =
-        document.getElementById("mainGate");
-
-
     const destination =
         document.querySelector(
-            `[data-block="${block}"]`
+            '[data-block="' + block + '"]'
         );
 
+
+    const marker =
+        document.getElementById(
+            "destinationMarker"
+        );
+
+
+    const route =
+        document.getElementById(
+            "routeLine"
+        );
+
+
+    const mainGate =
+        document.getElementById(
+            "mainGate"
+        );
+
+
+    // If destination doesn't exist
 
     if (!destination) {
 
@@ -318,7 +404,7 @@ function showDestinationOnMap(block) {
     }
 
 
-    // Remove previous highlight
+    // Remove previous selection
 
     document
         .querySelectorAll(".map-place")
@@ -329,31 +415,44 @@ function showDestinationOnMap(block) {
         });
 
 
+    // Highlight selected block
+
     destination.classList.add("selected");
 
 
+    // Get map position
+
     const map =
-        document.querySelector(".campus-map");
+        document.querySelector(
+            ".campus-map"
+        );
 
 
     const mapRect =
         map.getBoundingClientRect();
 
-    const gateRect =
-        gate.getBoundingClientRect();
 
     const destinationRect =
         destination.getBoundingClientRect();
 
 
-    // Destination marker
+    const gateRect =
+        mainGate.getBoundingClientRect();
+
+
+    // =================================
+    // DESTINATION MARKER
+    // =================================
 
     const destinationX =
+
         destinationRect.left -
         mapRect.left +
         destinationRect.width / 2;
 
+
     const destinationY =
+
         destinationRect.top -
         mapRect.top;
 
@@ -368,31 +467,45 @@ function showDestinationOnMap(block) {
         "block";
 
 
-    // Route start
+    // =================================
+    // ROUTE START
+    // =================================
 
     const startX =
+
         gateRect.left -
         mapRect.left +
         gateRect.width / 2;
 
+
     const startY =
+
         gateRect.top -
         mapRect.top +
         gateRect.height / 2;
 
 
-    // Route end
+    // =================================
+    // ROUTE END
+    // =================================
 
     const endX =
+
         destinationRect.left -
         mapRect.left +
         destinationRect.width / 2;
 
+
     const endY =
+
         destinationRect.top -
         mapRect.top +
         destinationRect.height / 2;
 
+
+    // =================================
+    // CALCULATE ROUTE
+    // =================================
 
     const dx =
         endX - startX;
@@ -403,8 +516,8 @@ function showDestinationOnMap(block) {
 
     const distance =
         Math.sqrt(
-            dx * dx +
-            dy * dy
+            (dx * dx) +
+            (dy * dy)
         );
 
 
@@ -413,6 +526,10 @@ function showDestinationOnMap(block) {
         180 /
         Math.PI;
 
+
+    // =================================
+    // DRAW ROUTE
+    // =================================
 
     route.style.left =
         startX + "px";
@@ -424,7 +541,7 @@ function showDestinationOnMap(block) {
         distance + "px";
 
     route.style.transform =
-        `rotate(${angle}deg)`;
+        "rotate(" + angle + "deg)";
 
     route.style.display =
         "block";
@@ -449,32 +566,54 @@ function setLanguage(language) {
         document.getElementById("subtitle");
 
     const destinationTitle =
-        document.getElementById("destinationTitle");
+        document.getElementById(
+            "destinationTitle"
+        );
 
     const blockLabel =
-        document.getElementById("blockLabel");
+        document.getElementById(
+            "blockLabel"
+        );
 
     const floorLabel =
-        document.getElementById("floorLabel");
+        document.getElementById(
+            "floorLabel"
+        );
 
     const roomLabel =
-        document.getElementById("roomLabel");
+        document.getElementById(
+            "roomLabel"
+        );
 
     const findButton =
-        document.getElementById("findButton");
+        document.getElementById(
+            "findButton"
+        );
 
     const mapTitle =
-        document.getElementById("mapTitle");
+        document.getElementById(
+            "mapTitle"
+        );
 
     const mapSubtitle =
-        document.getElementById("mapSubtitle");
+        document.getElementById(
+            "mapSubtitle"
+        );
 
     const mapNote =
-        document.getElementById("mapNote");
+        document.getElementById(
+            "mapNote"
+        );
 
     const directionsTitle =
-        document.getElementById("directionsTitle");
+        document.getElementById(
+            "directionsTitle"
+        );
 
+
+    // =================================
+    // KANNADA
+    // =================================
 
     if (language === "kn") {
 
@@ -506,12 +645,18 @@ function setLanguage(language) {
             "ಸ್ಥಳವನ್ನು ನೋಡಲು ಕೊಠಡಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.";
 
         mapNote.innerText =
-            "ℹ️ ಕೆಲವು ಕಟ್ಟಡಗಳ ನಿಖರ ಭೌಗೋಳಿಕ ಸ್ಥಾನಗಳನ್ನು ಅಧಿಕೃತ ಕ್ಯಾಂಪಸ್ ಲೇಔಟ್ ಆಧರಿಸಿ ಮುಂದಿನ ಹಂತದಲ್ಲಿ ನವೀಕರಿಸಲಾಗುತ್ತದೆ.";
+            "ℹ️ ಕೆಲವು ಕಟ್ಟಡಗಳ ನಿಖರ ಸ್ಥಳಗಳನ್ನು ಅಧಿಕೃತ ಕ್ಯಾಂಪಸ್ ಲೇಔಟ್ ಆಧರಿಸಿ ಮುಂದಿನ ಹಂತದಲ್ಲಿ ನವೀಕರಿಸಲಾಗುತ್ತದೆ.";
 
         directionsTitle.innerText =
             "🧭 ಮಾರ್ಗದರ್ಶನ";
+    }
 
-    } else {
+
+    // =================================
+    // ENGLISH
+    // =================================
+
+    else {
 
         title.innerText =
             "MCE Campus Navigator";
@@ -545,7 +690,65 @@ function setLanguage(language) {
 
         directionsTitle.innerText =
             "🧭 Directions";
+    }
+
+
+    // =================================
+    // REFRESH CURRENT DESTINATION
+    // =================================
+
+    const selectedBlock =
+        blockSelect.value;
+
+    const selectedFloor =
+        floorSelect.value;
+
+    const selectedRoom =
+        roomSelect.value;
+
+
+    if (
+        selectedBlock !== "" &&
+        selectedFloor !== "" &&
+        selectedRoom !== ""
+    ) {
+
+        findDestination();
 
     }
 
 }
+
+
+// =====================================
+// WINDOW RESIZE
+// =====================================
+
+window.addEventListener(
+    "resize",
+    function () {
+
+        const selectedBlock =
+            blockSelect.value;
+
+        const selectedFloor =
+            floorSelect.value;
+
+        const selectedRoom =
+            roomSelect.value;
+
+
+        if (
+            selectedBlock !== "" &&
+            selectedFloor !== "" &&
+            selectedRoom !== ""
+        ) {
+
+            showDestinationOnMap(
+                selectedBlock
+            );
+
+        }
+
+    }
+);
